@@ -76,7 +76,7 @@ var bookmark= {
 			}
 			var $contents_td= $('div#commentItem_'+request.data.rethreadIndex+' td.commentList_td');
 			request.data.content= $contents_td.text();
-			if($contents_td.find('img')){
+			if($contents_td.find('img').size() > 0){
 				var $thumb_img= $contents_td.find('img').eq(0).removeAttr('style').removeAttr('width').removeAttr('height');
 				request.data.content= $thumb_img[0].outerHTML+' '+request.data.content;
 			}
