@@ -174,21 +174,4 @@ imdae_yingyeo.popup= function(table){
   }
 }
 
-$('.tab-pane.active .list-group-item').on('click', 'a.delete', function(event){
-  console.log(event);
-  return false;
-});
-$('#manage').on('click', function(){
-  var $target_items= $('.tab-pane.active a.list-group-item');
-  if($target_items.eq(0).hasClass('disabled')){
-    $target_items.find('a.delete').remove();
-    $target_items.removeClass('disabled');
-  } else {
-    var $delete_btn= $('<a>').addClass('delete').attr({'title': '자리 빼기', 'href': '#delete'}).html('&times;');
-    $target_items.before($delete_btn);
-    $target_items.addClass('disabled');
-  }
-  return false;
-});
-
 imdae_yingyeo.popup('my_threads');
