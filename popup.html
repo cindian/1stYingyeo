@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="ko">
+	<head>
+		<meta charset="UTF-8">
+		<title>임대 기웃기웃</title>
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/style.css">
+		<script type="text/javascript" src="js/jquery.min.js"></script>
+		<script type="text/javascript" src="js/bootstrap.min.js"></script>
+		<script type="text/javascript" src="js/indexedDb.js"></script>
+	</head>
+	<body>
+		<div id="extension_wrapper" data-role="tabpanel">
+			<nav id="gnav" class="affix affix-top" data-spy="affix">
+				<ul class="nav nav-tabs" role="tablist">
+					<li class="active"><a href="#my_threads">자리 깐 스레</a></li>
+					<li><a href="#fav_rethreads">자리 깐 레스</a></li>
+					<!-- <li class="pull-right"><a href="#manage" id="manage"><img src="images/trashcan.png" alt=""></a></li> -->
+				</ul>
+			</nav>
+			<div class="container-fluid">
+				<div class="row">
+					<div class="tab-content">
+						<div id="sidebar" class="col-xs-4 pull-right">
+							<div class="form-group">
+								<input type="text" id="search" class="form-control" placeholder="스레 제목">
+							</div>
+							<h3>게시판</h3>
+							<div class="order-by-table"></div>
+							<h3>추가 타입</h3>
+							<div class="order-by-type"></div>
+						</div>
+						<div id="filter_title" class="col-xs-8"></div>
+						<div id="manage_btn_container" class="col-xs-8 text-right"></div>
+						<div id="my_threads" class="col-xs-8 tab-pane fade in active">
+							<div class="list-group"></div>
+						</div>
+						<div id="fav_rethreads" class="col-xs-8 tab-pane fade">
+							<div class="list-group"></div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="js/popup.js"></script>
+	</body>
+</html>

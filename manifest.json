@@ -1,0 +1,35 @@
+{
+  "manifest_version": 2,
+
+  "name": "실명이가 여기에 누워있어여",
+  "description": "누구보다 빠르게! 남들과는 다르게! 누워서 존잘님만 기다려여 8ㅅ8",
+  "version": "1.0",
+
+  "icons": {
+    "128": "icon.png"
+  },
+
+  "permissions": [
+      "*://*.daepiso.com/",
+      "tabs",
+      "alarms",
+      "unlimitedStorage"
+  ],
+
+  "browser_action": {
+    "default_icon": "icon.png",
+    "default_popup": "popup.html"
+  },
+
+  "content_scripts": [{
+      "matches": ["*://*.bbs.daepiso.com/*"],
+      "css": ["css/style.css"],
+      "js": ["js/jquery.min.js", "js/contentscript.js"]
+  }],
+
+  "background": {
+    "scripts": ["js/indexedDb.js", "js/background.js"]
+  },
+
+  "web_accessible_resources": [ "js/inject.js", "images/bookmark-01.png"]
+}
