@@ -1,4 +1,3 @@
-
 injectScript(chrome.extension.getURL('/js/'), 'inject.js');
 
 function injectScript(aBasePath, aScriptURL){
@@ -40,6 +39,7 @@ var bookmark= {
 		if(this.find_rethread > 0) this.find();
 	},
 	btn_init: function(data, thread_info){
+		if(thread_info.articleIndex == null) return false;
 		var comments_arr= [];
 		for(idx in data){
 			var comment= data[idx];
