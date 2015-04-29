@@ -9,10 +9,10 @@ function readyBookmark(){
 	}
 }
 
-window._GetCommentList= window.GetCommentList;
+window._GetCommentList_ImdaeYingyeo= window.GetCommentList;
 window.GetCommentList= function(table, articleIndex, page, moveTop){
 	console.log('call: '+page);
-	var ret= window._GetCommentList(table, articleIndex, page, moveTop);
+	var ret= window._GetCommentList_ImdaeYingyeo(table, articleIndex, page, moveTop);
 	setBookmarkInterval= setInterval(readyBookmark, 500);
 }
 
