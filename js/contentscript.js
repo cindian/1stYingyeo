@@ -26,6 +26,7 @@ function parseTime(time_str){
 
 var bookmark= {
 	find_rethread: 0,
+	data: [],
 	init: function(){
 		var request= {
 			'action': 'find',
@@ -33,13 +34,19 @@ var bookmark= {
 			'filter': 'articleIndex',
 			'key': url_frags.articleIndex * 1
 		}
-		chrome.runtime.sendMessage(request, function(response){
-			bookmark.btn_init(response.result, {'table_id': url_frags.table, 'articleIndex' : url_frags.articleIndex});
-		});
+		var thread_info= {'table_id': url_frags.table, 'articleIndex' : url_frags.articleIndex};
+		if(this.data.length < 1){
+			chrome.runtime.sendMessage(request, function(response){
+				bookmark.btn_init(response.result, thread_info);
+			});
+		} else {
+			bookmark.btn_init(this.data, thread_info);
+		}
 		if(this.find_rethread > 0) this.find();
 	},
 	btn_init: function(data, thread_info){
 		if(thread_info.articleIndex == null) return false;
+		if(data.length > bookmark.data.length) bookmark.data= data;
 		var comments_arr= [];
 		for(idx in data){
 			var comment= data[idx];

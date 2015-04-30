@@ -106,8 +106,9 @@ imdae_yingyeo.popup= function(table){
             if(/<img[^>]+>/i.test(item.content)){
               thumb_img= item.content.match(/<img[^>]+>/)[0];
               item.content= item.content.replace(thumb_img, '');
+							var img_src= thumb_img.match(/src="(\/\/[^"]+)"/);
+							if(img_src != null) thumb_img= thumb_img.replace(img_src[1], 'https:'+img_src[1]);
             }
-            console.log(item.content);
             var content= (item.content.length > 50) ? item.content.substr(0, 50) + '...' : item.content;
             var $content= $('<blockquote>').addClass('list-group-item-text').text(content);
             if(thumb_img.length > 0) $content.prepend($(thumb_img));
