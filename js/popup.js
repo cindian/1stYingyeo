@@ -119,7 +119,7 @@ imdae_yingyeo.popup= function(table){
         $item.append($('<p>').addClass('list-group-item-text').text(last_update.toLocaleDateString() + ' ' + last_update.toLocaleTimeString()));
         $('#'+table+' .list-group').append($item);
       }
-      $('.list-group').on('click', 'a.list-group-item', function(event){
+      $('.list-group').on('click', 'a.list-group-item:not(.delete)', function(event){
         event.stopImmediatePropagation();
         chrome.tabs.create({url: event.currentTarget.href});
         return false;
@@ -143,16 +143,16 @@ imdae_yingyeo.popup= function(table){
     $('.order-by-table, .order-by-type').on('click', 'a', function(event){
       var filter= event.delegateTarget.className.substr(9);
       var href= event.target.href;
-      $('.tab-pane.active .list-group a').show();
+      $('.tab-pane.active .list-group-item:hidden').show();
       set_filter_title(event.target.text);
-      $('.tab-pane.active .list-group a[data-'+filter+'!='+ href.substr(href.indexOf('#') + 1) +']').hide();
+      $('.tab-pane.active .list-group-item[data-'+filter+'!='+ href.substr(href.indexOf('#') + 1) +']').hide();
       return false;
     });
     $('#search').on('keyup', function(event){
       var keyword= $('#search').val();
-      $('.tab-pane.active .list-group a').show();
-      $('.tab-pane.active .list-group a h4:not(:contains('+keyword+'))').each(function(){
-        $(this).parents('a').hide();
+      $('.tab-pane.active .list-group-item:hidden').show();
+      $('.tab-pane.active .list-group-item h4:not(:contains('+keyword+'))').each(function(){
+        $(this).parents('.list-group-item').hide();
       });
       if(keyword.length > 0){
         set_filter_title(keyword, '제목');
@@ -169,10 +169,44 @@ imdae_yingyeo.popup= function(table){
     var $reset= $('<button>').addClass('btn btn-link').attr('type', 'button').append($('<i>').addClass('times-circle-o'));
     $('#filter_title').hide().append($title, $reset).slideDown('fast');
     $('#filter_title').on('click', 'button', function(){
-      $('.tab-pane.active .list-group a').show();
+      $('.tab-pane.active .list-group-item:hidden').show();
       $('#filter_title').children().remove();
     });
   }
 }
+
+if($('#manage').on('click', function(event){
+  var $items= $('.tab-pane.active .list-group-item');
+  $items.each(function(){
+    var $replaceE= $(this).is('a') ? $('<div>') : $('<a>');
+    for(idx in this.attributes){
+      if(typeof this.attributes[idx].nodeName != 'undefined') $replaceE.attr(this.attributes[idx].nodeName, this.attributes[idx].nodeValue);
+    }
+    if($replaceE.is('a')){
+      $(this).find('a').remove();
+    } else {
+      $replaceE.append($('<a>').attr({'href': '#delete', 'title': '자리 빼기'}).addClass('delete').html('&times;'));
+    }
+    $replaceE.append($(this).children());
+    $(this).replaceWith($replaceE);
+  });
+}));
+$('.list-group').on('click', 'a.delete', function(event){
+  var $target_item= $(this).parents('.list-group-item');
+  var target= $target_item.attr('href');
+  var request= {'action': 'delete'};
+  if(target.indexOf('#commentItem_') > -1){
+    request.table= 'fav_rethreads';
+    request.key= target.substr(target.indexOf('#commentItem_') + '#commentItem_'.length) * 1;
+  } else {
+    request.table= 'my_threads';
+    request.key= target.match(/articleIndex=([0-9]+)/)[1] * 1;
+  }
+  imdae_yingyeo.indexedDB(request, function(response){
+    if(response.result){
+      $target_item.slideUp('fast', function(){$(this).remove();});
+    }
+  });
+});
 
 imdae_yingyeo.popup('my_threads');

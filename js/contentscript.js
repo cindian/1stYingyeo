@@ -173,7 +173,7 @@ var scrap= {
 		}
 		chrome.runtime.sendMessage(request, function(response){
 			scrap.btn_reset('subscribe');
-			if(response.result) alert(scrap.sub_res_txt);
+			if(response.result) console.log(scrap.sub_res_txt);
 		});
 	},
 	update: function(data){
@@ -202,7 +202,7 @@ var scrap= {
 		};
 		chrome.runtime.sendMessage(request, function(response){
 			scrap.btn_reset('unsubscribe');
-			if(response.result) alert(scrap.unsub_res_txt);
+			if(response.result) console.log(scrap.unsub_res_txt);
 		});
 	},
 	getTitle: function(){
