@@ -1,4 +1,5 @@
 var imdae_yingyeo= {}
+var db_file= null;
 
 imdae_yingyeo.indexedDB= function(request, callback){
 	this.db= null;
@@ -95,5 +96,37 @@ imdae_yingyeo.indexedDB.exec= function(request, callback){
 	}
 	trans.oncomplete= function(){
 		callback({'result': result});
+	}
+}
+
+/*
+ * @table should be ['fav_rethreads', 'my_threads', 'setting'],
+ * @result should be {} at the first call
+ */
+imdae_yingyeo.indexedDB.exec.export= function(tables, result){
+	var result= result;
+	var trans= this.db.transaction([tables[0]], 'readwrite');
+	var store= trans.objectStore(tables[0]);
+	var db_request= store.openCursor();
+	db_request.onsuccess= function(event){
+		var resource= event.target.result;
+		var table_result= [];
+		if(!!resource){
+			table_result.push(resource.value);
+			resource.continue();
+		}
+		result[tables[0]]= table_result;
+		tables.shift();
+		if(tables.length > 0){
+			imdae_yingyeo.indexedDB.exec.export(tables, result);
+		} else {
+			imdae_yingyeo.indexedDB.exec.export.throwFile(result);
+		}
+	}
+	function throwFile(result){
+		var data= new Blob([result], {type: 'text/json'});
+		if(db_file != null) window.URL.revokeObjectURL(db_file);
+		db_file= window.URL.createObjectURL(data);
+		return db_file;
 	}
 }
