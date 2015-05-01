@@ -45,6 +45,10 @@ imdae_yingyeo.indexedDB.onerror= function(){
 }
 
 imdae_yingyeo.indexedDB.exec= function(request, callback){
+	if(request.action == 'export'){
+		imdae_yingyeo.indexedDB.exec.export(['fav_rethreads', 'my_threads', 'setting'], {});
+		return true;
+	}
 	var result= null;
 	var trans= this.db.transaction([request.table], 'readwrite');
 	var store= trans.objectStore(request.table);
@@ -105,7 +109,7 @@ imdae_yingyeo.indexedDB.exec= function(request, callback){
  */
 imdae_yingyeo.indexedDB.exec.export= function(tables, result){
 	var result= result;
-	var trans= this.db.transaction([tables[0]], 'readwrite');
+	var trans= imdae_yingyeo.indexedDB.db.transaction([tables[0]], 'readwrite');
 	var store= trans.objectStore(tables[0]);
 	var db_request= store.openCursor();
 	db_request.onsuccess= function(event){
@@ -117,16 +121,13 @@ imdae_yingyeo.indexedDB.exec.export= function(tables, result){
 		}
 		result[tables[0]]= table_result;
 		tables.shift();
-		if(tables.length > 0){
+		if(tables.length > 0 && typeof tables[0] != 'undefined'){
 			imdae_yingyeo.indexedDB.exec.export(tables, result);
 		} else {
-			imdae_yingyeo.indexedDB.exec.export.throwFile(result);
+			var data= new Blob(['var exported_db='+JSON.stringify(result)], {type: 'text/json'});
+			if(db_file != null) window.URL.revokeObjectURL(db_file);
+			db_file= window.URL.createObjectURL(data);
+			chrome.downloads.download({'url': db_file}, function(event){console.log(event)});
 		}
-	}
-	function throwFile(result){
-		var data= new Blob([result], {type: 'text/json'});
-		if(db_file != null) window.URL.revokeObjectURL(db_file);
-		db_file= window.URL.createObjectURL(data);
-		return db_file;
 	}
 }

@@ -63,10 +63,10 @@ imdae_yingyeo.bbs= {
 }
 var thread_type= ['즐겨찾기', '내 스레', '코멘트'];
 
-$('#gnav a:not(#manage)').click(function(e){
-  e.preventDefault()
-  $(this).tab('show')
-  imdae_yingyeo.popup(event.target.href.substr(event.target.href.indexOf('#') + 1));
+$('#gnav a:not(#manage,#db_manage_btn)').click(function(e){
+  e.preventDefault();
+  $(this).tab('show');
+	imdae_yingyeo.popup(event.target.href.substr(event.target.href.indexOf('#') + 1));
 })
 
 imdae_yingyeo.popup= function(table){
@@ -175,7 +175,10 @@ imdae_yingyeo.popup= function(table){
   }
 }
 
-if($('#manage').on('click', function(event){
+/*
+ * thread/rethread delete on popup page
+ */
+$('#manage').on('click', function(event){
   var $items= $('.tab-pane.active .list-group-item');
   $items.each(function(){
     var $replaceE= $(this).is('a') ? $('<div>') : $('<a>');
@@ -190,7 +193,7 @@ if($('#manage').on('click', function(event){
     $replaceE.append($(this).children());
     $(this).replaceWith($replaceE);
   });
-}));
+});
 $('.list-group').on('click', 'a.delete', function(event){
   var $target_item= $(this).parents('.list-group-item');
   var target= $target_item.attr('href');
@@ -203,10 +206,15 @@ $('.list-group').on('click', 'a.delete', function(event){
     request.key= target.match(/articleIndex=([0-9]+)/)[1] * 1;
   }
   imdae_yingyeo.indexedDB(request, function(response){
-    if(response.result){
-      $target_item.slideUp('fast', function(){$(this).remove();});
-    }
+    if(response.result) $target_item.slideUp('fast', function(){$(this).remove();});
   });
+});
+
+/*
+ * db export and import
+ */
+$('#db_export').on('click', function(event){
+	imdae_yingyeo.indexedDB({'action': 'export'}, function(response){return response.result});
 });
 
 imdae_yingyeo.popup('my_threads');
