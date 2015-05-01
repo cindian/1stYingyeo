@@ -83,13 +83,13 @@ imdae_yingyeo.indexedDB.exec= function(request, callback){
 		case 'update':
 			db_request= store.put(request.data);
 			db_request.onsuccess= function(event){
-				result= event.result;
+				result= true;
 			}
 			break;
 		case 'delete':
 			db_request= store.delete(request.key);
 			db_request.onsuccess= function(event){
-				result= event.result;
+				result= true;
 			}
 			break;
 		default:

@@ -26,8 +26,7 @@ a, a:hover, a:active, a:focus {text-decoration: none;}
 .order-by-table a:hover,
 .order-by-type a:hover {background-color: #369;}
 
-a.list-group-item a.delete {font-size: 2em; color: #000; cursor: pointer;}
-a.list-group-item a.delete:hover {color: #F00;}
+div.list-group-item {position: relative;}
 a.list-group-item:focus, 
 a.list-group-item:hover,
 .list-group-item.disabled,
@@ -43,7 +42,7 @@ a.list-group-item:hover .list-group-item-heading {color: #000;}
 .list-group-item-text {margin: .3em 0; font-size: .75em;}
 blockquote.list-group-item-text {font-size: 1em;}
 blockquote.list-group-item-text img {float: left; margin-right: .5em; width: 100px; height: auto; border: 5px solid #f9f9f9;}
-
+.list-group-item a.delete {position: absolute; display: block; bottom: .5em; right: .5em; font-size: 2em; color: #369;}
 
 .scrap_btn {display: inline-block; margin-top: .5em; padding: .75em 1em; border: 1px solid #999; background: #f9f9f9; color: #000 !important; border-radius: 3px;}
 .scrap_btn:hover {text-decoration: none;}
