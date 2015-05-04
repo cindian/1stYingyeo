@@ -13,7 +13,8 @@
       "*://*.daepiso.com/",
       "tabs",
       "alarms",
-      "unlimitedStorage"
+		"unlimitedStorage",
+      "downloads"
   ],
 
   "browser_action": {

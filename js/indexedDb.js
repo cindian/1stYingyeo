@@ -104,30 +104,32 @@ imdae_yingyeo.indexedDB.exec= function(request, callback){
 }
 
 /*
- * @table should be ['fav_rethreads', 'my_threads', 'setting'],
+ * @tables should be ['fav_rethreads', 'my_threads', 'setting'],
  * @result should be {} at the first call
  */
-imdae_yingyeo.indexedDB.exec.export= function(tables, result){
-	var result= result;
-	var trans= imdae_yingyeo.indexedDB.db.transaction([tables[0]], 'readwrite');
-	var store= trans.objectStore(tables[0]);
+imdae_yingyeo.indexedDB.exec.export= function(tables, results){
+	var result= [];
+	var table= tables[0];
+	var trans= imdae_yingyeo.indexedDB.db.transaction([table], 'readonly');
+	var store= trans.objectStore(table);
 	var db_request= store.openCursor();
 	db_request.onsuccess= function(event){
 		var resource= event.target.result;
-		var table_result= [];
 		if(!!resource){
-			table_result.push(resource.value);
+			result.push(resource.value);
 			resource.continue();
 		}
-		result[tables[0]]= table_result;
+	}
+	trans.oncomplete= function(){
 		tables.shift();
-		if(tables.length > 0 && typeof tables[0] != 'undefined'){
-			imdae_yingyeo.indexedDB.exec.export(tables, result);
+		if(tables.length > 0){
+			results[table]= result;
+			imdae_yingyeo.indexedDB.exec.export(tables, results);
 		} else {
-			var data= new Blob(['var exported_db='+JSON.stringify(result)], {type: 'text/json'});
+			var data= new Blob(['var exported_db='+JSON.stringify(results)], {type: 'text/json'});
 			if(db_file != null) window.URL.revokeObjectURL(db_file);
 			db_file= window.URL.createObjectURL(data);
-			chrome.downloads.download({'url': db_file}, function(event){console.log(event)});
+			chrome.downloads.download({'url': db_file, 'filename': 'db_export.json'}, function(){return false;});
 		}
 	}
 }
