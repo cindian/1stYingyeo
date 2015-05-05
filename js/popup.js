@@ -216,5 +216,19 @@ $('.list-group').on('click', 'a.delete', function(event){
 $('#db_export').on('click', function(event){
 	imdae_yingyeo.indexedDB({'action': 'export'}, function(response){return response.result});
 });
-
+$('#db_file').on('change', function(){
+	var reader= new FileReader();
+	reader.onload= function(event){
+		imdae_yingyeo.indexedDB({
+			'action': 'import', 
+			'data': JSON.parse(reader.result)
+		}, function(response){
+			if(response.result){
+				imdae_yingyeo.popup('my_threads');
+				$('.modal-header button').trigger('click');
+			}
+		});
+	}
+	reader.readAsText(this.files[0]);
+});
 imdae_yingyeo.popup('my_threads');

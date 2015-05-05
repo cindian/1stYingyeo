@@ -48,6 +48,9 @@ imdae_yingyeo.indexedDB.exec= function(request, callback){
 	if(request.action == 'export'){
 		imdae_yingyeo.indexedDB.exec.export(['fav_rethreads', 'my_threads', 'setting'], {});
 		return true;
+	} else if(request.action == 'import'){
+		imdae_yingyeo.indexedDB.exec.import(request.data, callback);
+		return true;
 	}
 	var result= null;
 	var trans= this.db.transaction([request.table], 'readwrite');
@@ -126,10 +129,43 @@ imdae_yingyeo.indexedDB.exec.export= function(tables, results){
 			results[table]= result;
 			imdae_yingyeo.indexedDB.exec.export(tables, results);
 		} else {
-			var data= new Blob(['var exported_db='+JSON.stringify(results)], {type: 'text/json'});
+			var data= new Blob([JSON.stringify(results)], {type: 'text/json'});
 			if(db_file != null) window.URL.revokeObjectURL(db_file);
 			db_file= window.URL.createObjectURL(data);
 			chrome.downloads.download({'url': db_file, 'filename': 'db_export.json'}, function(){return false;});
 		}
 	}
+}
+
+imdae_yingyeo.indexedDB.import_data= {};
+imdae_yingyeo.indexedDB.exec.import= function(data, callback){
+	imdae_yingyeo.indexedDB.import_data= data;
+	for(var table in data){
+		for(var idx in data[table]){
+			imdae_yingyeo.indexedDB.exec.importItems(table, data[table][idx]);
+		}
+	}
+	var checkComplete= setInterval(function(){
+		var size= 0;
+		for(var idx in imdae_yingyeo.indexedDB.import_data){
+			size++;
+		}
+		if(size < 1){
+			clearInterval(checkComplete);
+			callback({'result': true});
+		}
+	}, 500);
+}
+imdae_yingyeo.indexedDB.exec.importItems= function(table, item){
+	imdae_yingyeo.indexedDB.exec({
+		'action': 'add', 
+		'table': table, 
+		'data': item
+	}, function(response){
+		var target_idx= imdae_yingyeo.indexedDB.import_data[table].indexOf(item);
+		imdae_yingyeo.indexedDB.import_data[table].splice(target_idx, 1);
+		if(imdae_yingyeo.indexedDB.import_data[table].length < 1){
+			delete imdae_yingyeo.indexedDB.import_data[table];
+		}
+	});
 }
