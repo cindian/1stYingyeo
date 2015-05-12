@@ -219,5 +219,5 @@ if(document.referrer == 'http://bbs.daepiso.com/MBXE/Article_Write_Post.jsp') sc
 scrap.init();
 
 window.addEventListener('message', function(event){
-	eval(event.data.callback+'()');
+	if(typeof event.data.from != 'undefined' && event.data.from == 'imdae_yingyeo') eval(event.data.callback+'()');
 });
