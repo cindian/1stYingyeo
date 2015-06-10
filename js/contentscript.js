@@ -45,7 +45,7 @@ var bookmark= {
 		if(this.find_rethread > 0) this.find();
 	},
 	btn_init: function(data, thread_info){
-		if(thread_info.articleIndex == null) return false;
+		if(thread_info.articleIndex == null) return false; // quit this function if a comments list opens as preview mode
 		if(data.length > bookmark.data.length) bookmark.data= data;
 		var comments_arr= [];
 		for(idx in data){
@@ -213,11 +213,14 @@ var scrap= {
 
 var url_frags= parseURL(window.location.href);
 
+// if the url has a comment item idx, the function which finds the comment will work 
 if(window.location.href.indexOf('#commentItem_') > -1) bookmark.find_rethread= window.location.href.substr(window.location.href.indexOf('#commentItem_') + '#commentItem_'.length);
+// if webpage has a referrer url called after writing, it will be recorded as 'my thread'
 if(document.referrer == 'http://bbs.daepiso.com/MBXE/Article_Write_Post.jsp') scrap.add(1);
 
 scrap.init();
 
 window.addEventListener('message', function(event){
-	if(typeof event.data.from != 'undefined' && event.data.from == 'imdae_yingyeo') eval(event.data.callback+'()');
+	if(event.data.from != 'imdae_yingyeo') return false;
+	eval(event.data.callback+'()');
 });
